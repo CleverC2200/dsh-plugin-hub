@@ -151,7 +151,7 @@ export function removeNotification(id: number): NotificationRecord[] {
   return next
 }
 
-export type FailureKind = 'npmTooOld' | 'dshMissing' | 'gitMissing' | 'pnpmMissing' | 'npmMissing' | 'pnpmStore' | 'pnpmPolicy' | 'pnpmIgnoredBuild' | 'pluginPrepare' | 'network' | 'repo'
+export type FailureKind = 'npmTooOld' | 'dshMissing' | 'gitMissing' | 'pnpmMissing' | 'npmMissing' | 'pnpmStore' | 'pnpmWorkspace' | 'pnpmPolicy' | 'pnpmIgnoredBuild' | 'pluginPrepare' | 'network' | 'repo'
 
 /**
  * 失败归类，七态。无论底层机制如何（pnpm 白名单拦截 / 构建脚本被忽略 / prepare 失败），
@@ -184,6 +184,11 @@ export type FailureKind = 'npmTooOld' | 'dshMissing' | 'gitMissing' | 'pnpmMissi
  *   当前 pnpm 不认，任何插件装进该 profile 都会失败；不是插件问题（dsh-plugin-hub#14：macOS 下
  *   `ERR_PNPM_UNEXPECTED_STORE` 被误归插件侧失败；dsh-plugin-hub#30：`ERR_PNPM_UNEXPECTED_VIRTUAL_STORE`
  *   漏判被误归插件侧失败）→ 提示清理 profile 依赖目录重建，不引导提 Issue
+ * - pnpmWorkspace：pnpm 在 workspace 根目录下拒绝安装（`ERR_PNPM_ADDING_TO_ROOT` —— 宿主在
+ *   profile 目录里调用 `pnpm add` 时未声明在 workspace 根操作）。profile 目录含
+ *   pnpm-workspace.yaml 即被 pnpm 视为 workspace 根，缺 `-w`/`--workspace-root` 就整条命令
+ *   被拒，任何插件都装不上，不是插件问题（dsh-plugin-hub#40）→ 提示在 profile 的 .npmrc 里
+ *   加 `ignore-workspace-root-check=true` 或升级宿主，不引导提 Issue
  * - pnpmPolicy：pnpm 11 的供应链安全策略拒绝安装（`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION` /
  *   `Minimum release age` —— 锁文件里包的发布时间还不满 24 小时被拒；`untrusted origin` —— 依赖来源未被
  *   本机 pnpm 信任）。拦的是「刚发布的新包」与「未被信任的来源」，装任何新插件都会撞墙，不是
@@ -243,6 +248,11 @@ export function classifyFailure(message: string): FailureKind {
   // 提示清理依赖目录用当前 pnpm 重建，不引导提 Issue。必须在 pnpmMissing 之后 ——
   // pnpm 在（能跑起来报错），不是「找不到命令」。
   if (/ERR_PNPM_UNEXPECTED_(VIRTUAL_)?STORE|Unexpected (virtual )?store location/i.test(message)) return 'pnpmStore'
+  // pnpm 拒绝在 workspace 根目录下安装（ERR_PNPM_ADDING_TO_ROOT）:profile 目录被视为
+  // pnpm workspace 根，宿主调 pnpm add 时没声明在根操作（缺 -w/--workspace-root），
+  // pnpm 直接整条命令拒绝 —— 本机 profile/宿主调用方式问题，任何插件都装不上，不是插件问题
+  // （dsh-plugin-hub#40：Win 下装 hub 本体，ADDING_TO_ROOT 被误归插件侧失败）
+  if (/ERR_PNPM_ADDING_TO_ROOT|add the dependency to the workspace root/i.test(message)) return 'pnpmWorkspace'
   // pnpm 供应链安全策略拦截（pnpm 11：minimumReleaseAge 拒收「刚发布」的包 /
   // untrusted origin 来源不受信任）：pnpm 在、也连得上，纯粹是本机策略不放行 ——
   // 装任何「新发布/非信任来源」的插件都会同样失败，不是插件问题（dsh-plugin-hub#15/#16）。

@@ -204,6 +204,19 @@ test('classifyFailure: pnpm supply-chain policy blocks are environment issues (i
   assert.equal(classifyFailure('ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION ... Command failed: pnpm add'), 'pnpmPolicy')
 })
 
+test('classifyFailure: pnpm workspace-root check is an environment issue (issue #40), not a plugin issue', () => {
+  // #40：宿主在 profile 目录（pnpm 视为 workspace 根）执行 pnpm add 时未声明在根操作 →
+  // pnpm 直接拒绝，任何插件都装不上
+  assert.equal(
+    classifyFailure('ERR_PNPM_ADDING_TO_ROOT  Running this command will add the dependency to the workspace root, which might not be what you want - if you really meant it, make it explicit by running this command again with the -w flag (or --workspace-root). If you do not want to see this warning anymore, you may set the ignore-workspace-root-check setting to true.\ndsh: pnpm failed in profile directory C:\\Users\\five\\.dsh\\profiles\\web'),
+    'pnpmWorkspace',
+  )
+  // 只带说明句（无错误码）也要能归到 pnpmWorkspace
+  assert.equal(classifyFailure('Running this command will add the dependency to the workspace root, which might not be what you want'), 'pnpmWorkspace')
+  // 不落入「插件侧失败」兜底
+  assert.equal(classifyFailure('ERR_PNPM_ADDING_TO_ROOT'), 'pnpmWorkspace')
+})
+
 test('classifyFailure: generic install failure falls back to repo', () => {
   assert.equal(classifyFailure('network error while fetching'), 'repo')
   assert.equal(classifyFailure(''), 'repo')

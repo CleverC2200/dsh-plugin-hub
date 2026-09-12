@@ -286,6 +286,12 @@ export function NotificationsModal({ records, tasks, pendingRestarts, t, env, on
                       // 给安装指引，不引导提 Issue
                       return h('div', { className: styles.failPrepareHint }, t('failNpmMissingHint'))
                     }
+                    if (kind === 'pnpmWorkspace') {
+                      // pnpm 拒绝把依赖装到 workspace 根目录（ERR_PNPM_ADDING_TO_ROOT）：宿主在 profile
+                      // 目录调 pnpm add 未声明在根操作，任何插件都会失败，不是插件问题 ——
+                      // 给 .npmrc 豁免指引，不引导提 Issue（dsh-plugin-hub#40）
+                      return h('div', { className: styles.failPrepareHint }, t('failPnpmWorkspaceHint'))
+                    }
                     if (kind === 'pnpmStore') {
                       // pnpm 存在但 store 大版本不匹配（ERR_PNPM_UNEXPECTED_STORE）：profile 目录旧依赖是
                       // 另一大版本 pnpm 装的，当前 pnpm 不认，任何插件装进该 profile 都会失败 ——

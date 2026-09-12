@@ -49,6 +49,7 @@ function reasonTitleOf(kind: FailureKind): string {
     case 'dshMissing': return 'dsh command not found on the user machine'
     case 'pnpmMissing': return 'pnpm command not found on the user machine'
     case 'pnpmStore': return 'pnpm store version mismatch on the user machine'
+    case 'pnpmWorkspace': return 'pnpm workspace-root check blocked the install on the user machine'
     case 'pnpmPolicy': return 'pnpm supply-chain policy blocked the install on the user machine'
     case 'pnpmIgnoredBuild': return 'build scripts blocked by pnpm allowlist'
     case 'pluginPrepare': return 'plugin distribution incomplete'

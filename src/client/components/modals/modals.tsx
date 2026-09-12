@@ -403,6 +403,11 @@ export function ErrorModal({ message, repo, kind, command, attempts, t, env, onC
               // 全局 npm 安装通道 spawn 的 npm 找不到（Win「'npm' is not recognized」/ POSIX
               // 「npm: command not found」/ spawn ENOENT）：本机 npm 未安装或不在 PATH —— 给安装指引，不引导提 Issue
               ? h('div', { className: styles.failPrepareHint }, t('failNpmMissingHint'))
+              : failureKind === 'pnpmWorkspace'
+              // pnpm 拒绝把依赖装到 workspace 根目录（ERR_PNPM_ADDING_TO_ROOT）：宿主在 profile 目录
+              // 调 pnpm add 时未声明在根操作，任何插件都会失败，不是插件问题 ——
+              // 给 .npmrc 豁免指引，不引导提 Issue（dsh-plugin-hub#40）
+              ? h('div', { className: styles.failPrepareHint }, t('failPnpmWorkspaceHint'))
               : failureKind === 'pnpmStore'
               // pnpm 存在但 store 大版本不匹配（ERR_PNPM_UNEXPECTED_STORE）：profile 目录旧依赖是
               // 另一大版本 pnpm 装的，当前 pnpm 不认，任何插件装进该 profile 都会失败 ——

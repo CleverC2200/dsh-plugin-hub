@@ -23,7 +23,7 @@ import {
 import type { InstalledItem, InstalledVersionSignal } from '../logic/installed.ts'
 
 /** 插件市场自身仓库：DSH Plugin Hub 不显示在目录里（自己不进自己的插件列表） */
-const SELF_REPO = 'dshplugin/dsh-plugin-hub'
+const SELF_REPO = HUB_REPO
 
 /** 市场各排序的默认方向：全部按倒序（Star/Fork 多、更新/收录近的在前） */
 const SORT_DEFAULT_DIR: Record<SortKey, 'asc' | 'desc'> = {
@@ -112,7 +112,7 @@ export function useCatalog(lang: LocaleId) {
         const hadSelf = list.some((p) => p.source?.repo === SELF_REPO)
         // 过滤前单独保留 hub 自身条目：它不进目录列表，但「可更新」徽标的直接更新需要它作为重装目标
         setHubPlugin(list.find((p) => p.source?.repo === SELF_REPO) ?? null)
-        setPlugins(list.filter((p) => p.compatibility?.status === 'verified' && p.source?.repo !== SELF_REPO))
+        setPlugins(list.filter((p) => p.source?.repo !== SELF_REPO))
         if (stats) {
           setStats(hadSelf
             ? { total: stats.total - 1, verified: stats.verified - 1 }

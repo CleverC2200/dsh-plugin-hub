@@ -7,12 +7,12 @@
  */
 export const zh = {
   nav: '插件市场',
-  title: 'DSH Plugin Hub',
+  title: 'GEA Plugin Hub',
   // 收录/精选数量由组件从官网 /api/stats.json 实时拉取填充（{total}/{verified}），不写死
-  tagline: 'DSH Plugin 插件市场：面向 DeepSeek Harness 插件收录平台，人工审验、来源可溯，免费安装',
+  tagline: '公司维护的插件与仓库目录',
   adBadge: '推荐',
   // 紫色广告横幅：突出数量（显眼）+ 更新节奏，与 tagline 职责分开、不重复
-  ad: 'DSH Plugin 插件市场：收录 {total} 款插件，{verified} 款人工精选验证，每日更新',
+  ad: '公司插件目录：收录 {total} 款插件',
   search: '搜索插件名称、描述、标签…',
   all: '全部',
   sortStars: 'Star',
@@ -20,7 +20,7 @@ export const zh = {
   sortUpdated: '最近更新',
   sortNewest: '最新收录',
   sortAria: '插件排序方式',
-  openHint: '打开 dsh-plugin.org',
+  openHint: '打开公司仓库',
   toggleLangHint: '切换界面语言',
   fork: 'Fork',
   loading: '正在加载插件数据…',
@@ -357,20 +357,20 @@ export const zh = {
   // 头部「关注我们」弹窗：平台介绍 + 用户反馈群二维码（内容由 Worker /about Markdown 推送，非写死）
   followUs: '关注我们',
   aboutTitle: '关注我们',
-  aboutDesc: '了解 DSH Plugin Hub 是做什么的，加入用户反馈群随时交流。',
+  aboutDesc: '查看公司插件与 Agent 套件仓库。',
   aboutEmpty: '内容暂未发布，敬请期待。',
   aboutUpdated: '更新于',
   empty: '该分类暂无插件',
-  dataFrom: '数据源 api.dsh-plugin.org · 每日人工更新',
+  dataFrom: '数据源：公司维护的本地目录',
 }
 
 export const en = {
   nav: 'Plugin Hub',
-  title: 'DSH Plugin Hub',
+  title: 'GEA Plugin Hub',
   // Plugin counts are filled from the live /api/stats.json ({total}/{verified}), never hardcoded
-  tagline: 'DSH Plugin Hub: a human-verified, free marketplace for DeepSeek Harness plugins',
+  tagline: 'Company-maintained plugins and repositories',
   adBadge: 'Featured',
-  ad: 'DSH Plugin Hub: {total} plugins indexed, {verified} human-verified, updated daily',
+  ad: 'Company catalog: {total} plugins',
   search: 'Search plugins by name, description, tags…',
   all: 'All',
   sortStars: 'Stars',
@@ -718,9 +718,9 @@ export const en = {
   // Header "Follow us" modal: platform intro + user feedback group QR (content pushed via Worker /about Markdown)
   followUs: 'Follow us',
   aboutTitle: 'Follow us',
-  aboutDesc: 'Learn what DSH Plugin Hub does and join our user feedback group.',
+  aboutDesc: 'Browse company plugins and Agent resource suites.',
   aboutEmpty: 'Content not published yet — stay tuned.',
   aboutUpdated: 'Updated',
   empty: 'No plugins in this category yet',
-  dataFrom: 'Data from api.dsh-plugin.org · curated daily',
+  dataFrom: 'Source: company-maintained local catalog',
 }

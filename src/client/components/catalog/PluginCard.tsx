@@ -82,6 +82,7 @@ export function PluginCard({ plugin: p, copied, installedName, installedVersion,
               ? h('button', {
                 className: styles.installBtnUpdate,
                 title: t('updateAvailableHint'),
+                disabled: p.install?.webInstallable === false,
                 onClick: () => onInstall(p, { update: true }),
               }, t('update'))
               : h('button', {
@@ -96,6 +97,7 @@ export function PluginCard({ plugin: p, copied, installedName, installedVersion,
               className: isCopied ? styles.installBtnCopied : styles.installBtn,
               // 文字恒定避免按钮宽度变化导致卡片跳动；点击先弹信任确认，
               // 弹窗内可选择复制命令或直接安装
+              disabled: p.install?.webInstallable === false,
               onClick: () => onInstall(p),
             }, t('install')),
           isInstalled

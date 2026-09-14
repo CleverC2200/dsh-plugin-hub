@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin",
-  "version": "1.4.3-company.1",
+  "version": "1.4.3-company.2",
   "description": "Company plugin catalog based on DSH Plugin Hub",
   "type": "module",
   "main": "lib/index.js",
@@ -76,7 +76,8 @@
     },
     "./client": "./client/client.js",
     "./cordis.patch.yml": "./cordis.patch.yml",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./release-channel": "./lib/services/release-channel.js"
   },
   "files": [
     "lib",

@@ -1,3 +1,4 @@
+import {desktopControl,hasDesktopOwner} from '../services/desktop-control.ts'
 import { companyCatalog, companyInstallable } from '../services/company-catalog.ts'
 /**
  * DSH Plugin Hub — the community plugin marketplace for DeepSeek Harness.
@@ -279,6 +280,19 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
     message: `Plugin Hub 已启动（profile=${profile}）`,
   })
   const disposers = [
+    webServer.register({kind:'exact',path:'/dsh-plugin-hub/desktop-updates',handler:async(request,response)=>{
+      if(request.method==='GET') {
+        if(!hasDesktopOwner()){sendJson(response,200,{desktop:false});return}
+        try{sendJson(response,200,{desktop:true,...await desktopControl('status') as object})}catch{sendJson(response,503,{error:'DESKTOP_UNAVAILABLE'})}
+        return
+      }
+      if(!requireTrustedPost(request,response))return
+      try {
+        const body=await readJsonBody(request) as {action?:string;value?:unknown}
+        if(!['check','settings','prepare','cancel','restart'].includes(body?.action??'')){sendJson(response,400,{error:'INVALID_UPDATE_ACTION'});return}
+        sendJson(response,200,await desktopControl(body.action!,body.value??{}))
+      }catch(error){sendJson(response,503,{error:error instanceof Error&&/^[A-Z][A-Z_0-9]+$/.test(error.message)?error.message:'DESKTOP_UPDATE_FAILED'})}
+    }}),
     webServer.register({
       kind: 'exact',
       path: '/dsh-plugin-hub/debug/loader-entries',
@@ -591,6 +605,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
       path: '/dsh-plugin-hub/install',
       handler: async (request, response) => {
         if (!requireTrustedPost(request, response)) return
+        if(hasDesktopOwner()){sendJson(response,409,{error:'请使用公司桌面更新 / Use company desktop updates'});return}
         // 任务自动入队：即使已有插件操作在跑也接受请求（FIFO 串行执行），不再 409 拒绝
         try {
           const body = await readJsonBody(request)
@@ -834,6 +849,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
       path: '/dsh-plugin-hub/uninstall',
       handler: async (request, response) => {
         if (!requireTrustedPost(request, response)) return
+        if(hasDesktopOwner()){sendJson(response,409,{error:'桌面插件由外置版本管理 / Desktop plugins use immutable versions'});return}
         // 与安装一致：卸载也进入同一队列，FIFO 串行执行
         try {
           const body = await readJsonBody(request)
@@ -928,8 +944,9 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
     webServer.register({
       kind: 'exact',
       path: '/dsh-plugin-hub/restart',
-      handler: (request, response) => {
+      handler: async (request, response) => {
         if (!requireTrustedPost(request, response)) return
+        if(hasDesktopOwner()){try{sendJson(response,200,await desktopControl('restart',{}))}catch{sendJson(response,503,{error:'DESKTOP_RESTART_FAILED'})}return}
         // 当前宿主监听端口来自请求 Host 头（localhost:7923），解析失败回退 7923
         const host = request.headers.host ?? ''
         const portMatch = host.match(/:(\d+)$/)

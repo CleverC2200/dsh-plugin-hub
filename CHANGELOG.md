@@ -47,3 +47,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 [Unreleased]: https://github.com/dshplugin/dsh-plugin-hub/compare/v0.1.1...HEAD
 [0.1.1]: https://github.com/dshplugin/dsh-plugin-hub/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dshplugin/dsh-plugin-hub/releases/tag/v0.1.0
+
+## 1.4.3-company.2
+
+Company stable/test release contracts, authenticated private downloads, SHA-256 and exact compatibility checks; desktop-owned preparation/cancellation/restart, automatic/manual checks and visible update results. Desktop graphs reject legacy in-place installation and removal.

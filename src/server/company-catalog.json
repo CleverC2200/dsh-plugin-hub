@@ -4,7 +4,7 @@
     "ownerSlug": "cleverc2200",
     "displayName": "GEA 业务工作台",
     "category": "agent",
-    "description": "GEA 登录与需求预测业务页面；当前随桌面包分发，标准插件安装接入待完成。",
+    "description": "GEA 登录与需求预测业务页面；随桌面发行，通过公司桌面更新准备新版本。",
     "source": {
       "repo": "CleverC2200/dsh-gea-plugin"
     },
@@ -14,7 +14,7 @@
     "locales": {
       "en": {
         "displayName": "GEA business workbench",
-        "description": "GEA login and business pages. Bundled desktop distribution; standard installation is not yet available."
+        "description": "GEA login and business pages. Distributed with the desktop; prepare new versions through company desktop updates."
       }
     }
   },

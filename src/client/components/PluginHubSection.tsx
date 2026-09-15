@@ -48,7 +48,7 @@ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
   const { settings: hubSettings, ready: settingsReady, update: updateSettings, reset: resetSettings } = useSettings()
 
   /** 一级导航：插件市场 / 已安装 / 自定义安装 / 设置 */
-  const [view, setView] = useState<SectionView>('market')
+  const [view, setView] = useState<SectionView>('updates')
   /** 外部跳转设置分组的一次性信号（错误弹窗「去系统诊断」→ 设置 → 系统诊断）：
    *  传给 SettingsView 消费后即清空，避免下次进设置被强制带跳 */
   const [settingsSection, setSettingsSection] = useState<SettingsSection | null>(null)
@@ -391,9 +391,9 @@ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
         },
       }),
     ),
-    h(DesktopUpdates, { lang }),
+    h('div', { hidden: view !== 'updates' }, h(DesktopUpdates, { lang })),
     (view === 'settings' || view === 'custom') && h('p', { className: styles.companyIntro }, t('maintenanceHint')),
-    view === 'market'
+    view === 'updates' ? null : view === 'market'
       ? h(MarketView, {
           catalog,
           t,

@@ -6,7 +6,16 @@
  * zh/en dictionaries for the DSH Plugin Hub settings section.
  */
 export const zh = {
-  nav: '插件市场',
+  companyTitle: '公司插件',
+  companyIntro: '为日常工作添加所需功能，由公司统一维护。',
+  companySearch: '搜索公司插件',
+  companyBundled: '随桌面提供',
+  companyBundledHint: '通过桌面更新获取新版本',
+  companyManage: '管理',
+  maintenance: '技术维护',
+  maintenanceHint: '供技术支持人员排查问题和维护安装。',
+
+  nav: '公司插件',
   title: 'GEA Plugin Hub',
   // 收录/精选数量由组件从官网 /api/stats.json 实时拉取填充（{total}/{verified}），不写死
   tagline: '公司维护的插件与仓库目录',
@@ -36,7 +45,7 @@ export const zh = {
   toastCopied: '安装命令已复制，去 dsh 终端粘贴即可安装',
   installed: '已安装',
   // 一级导航：插件市场 / 已安装 / 自定义安装 / 设置
-  viewMarket: '插件市场',
+  viewMarket: '公司插件',
   viewInstalled: '已安装',
   viewCustom: '自定义安装',
   viewSettings: '设置',
@@ -369,6 +378,15 @@ export const zh = {
 }
 
 export const en = {
+  companyTitle: 'Company plugins',
+  companyIntro: 'Tools for your daily work, maintained by your company.',
+  companySearch: 'Search company plugins',
+  companyBundled: 'Included with desktop',
+  companyBundledHint: 'New versions arrive through desktop updates',
+  companyManage: 'Manage',
+  maintenance: 'Technical support',
+  maintenanceHint: 'Installation and troubleshooting tools for technical support.',
+
   nav: 'Plugin Hub',
   title: 'GEA Plugin Hub',
   // Plugin counts are filled from the live /api/stats.json ({total}/{verified}), never hardcoded

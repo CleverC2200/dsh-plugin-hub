@@ -482,3 +482,12 @@
   flex: 1 1 auto;
   min-width: 0;
 }
+
+/* Company catalog: the host settings dialog owns the only scroll container. */
+.root { height: auto; min-height: 100%; gap: 0; }
+.companyHeader { padding: 8px 0 20px; }
+.companyTitle { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.4; color: var(--hub-text-primary); }
+.companyIntro { margin: 6px 0 0; font-size: 13px; line-height: 1.6; color: var(--hub-text-secondary); }
+.companySearch { box-sizing: border-box; width: 100%; min-height: 36px; margin: 16px 0 8px; padding: 8px 12px; border: 1px solid var(--hub-border-input); border-radius: 6px; font: inherit; color: var(--hub-text-primary); background: var(--hub-bg-1); }
+.root :focus-visible { outline: 2px solid var(--hub-brand); outline-offset: 3px; }
+.root ::selection { background: var(--hub-brand-tint-strong); }

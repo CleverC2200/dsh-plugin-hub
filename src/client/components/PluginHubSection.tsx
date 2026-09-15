@@ -1,4 +1,4 @@
-import {DesktopUpdates} from './DesktopUpdates.tsx'
+import { DesktopUpdates } from './DesktopUpdates.tsx'
 /**
  * DSH Plugin Hub — the community plugin marketplace for DeepSeek Harness.
  * Website: https://dsh-plugin.org
@@ -391,7 +391,8 @@ export function PluginHubSection({ t: _hostT, locale }: SectionProps) {
         },
       }),
     ),
-    h(DesktopUpdates,{lang}),
+    h(DesktopUpdates, { lang }),
+    (view === 'settings' || view === 'custom') && h('p', { className: styles.companyIntro }, t('maintenanceHint')),
     view === 'market'
       ? h(MarketView, {
           catalog,

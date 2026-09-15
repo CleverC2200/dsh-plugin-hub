@@ -11,7 +11,6 @@
 import { createElement as h, useEffect, useRef } from 'react'
 import styles from '../../styles/List.module.css'
 import type { HubPlugin, LocaleId, Translate } from '../../types.ts'
-import { siteUrl } from '../../logic/urls.ts'
 import { useIncrementalList } from '../../hooks/useIncrementalList.ts'
 import { PluginCard } from './PluginCard.tsx'
 
@@ -78,14 +77,6 @@ export function CatalogList({ plugins, failed, visible, total, t, langPath, relo
       })),
       // 滚动加载哨兵：透明 1px 元素，进入视口即触发下一批渲染（加载是纯追加，无需按钮）
       hasMore && h('div', { ref: sentinelRef, className: styles.moreSentinel, 'aria-hidden': 'true' }),
-    ),
-    plugins !== null && !failed && h('div', { className: styles.footer },
-      h('a', {
-        className: styles.footLink,
-        href: siteUrl(langPath),
-        target: '_blank',
-        rel: 'noopener noreferrer',
-      }, t('browseAll', { n: total })),
     ),
   )
 }

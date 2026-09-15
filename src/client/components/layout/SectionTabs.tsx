@@ -11,15 +11,13 @@
  */
 import { createElement as h } from 'react'
 import styles from '../../styles/SectionTabs.module.css'
-import { BellIcon, InstalledIcon, MarketIcon, SettingsIcon, TerminalIcon } from '../ui/icons.tsx'
+import { BellIcon, InstalledIcon, MarketIcon } from '../ui/icons.tsx'
 
 export type SectionView = 'market' | 'installed' | 'custom' | 'settings'
 
 const ORDER: Array<{ id: SectionView; labelKey: string; hintKey: string; Icon: () => ReturnType<typeof h> }> = [
   { id: 'market', labelKey: 'viewMarket', hintKey: 'viewMarketHint', Icon: MarketIcon },
   { id: 'installed', labelKey: 'viewInstalled', hintKey: 'viewInstalledHint', Icon: InstalledIcon },
-  { id: 'custom', labelKey: 'viewCustom', hintKey: 'viewCustomHint', Icon: TerminalIcon },
-  { id: 'settings', labelKey: 'viewSettings', hintKey: 'viewSettingsHint', Icon: SettingsIcon },
 ]
 
 export function SectionTabs({ view, setView, installedCount, t, noticeCount, onOpenNotifications }: {
@@ -32,11 +30,11 @@ export function SectionTabs({ view, setView, installedCount, t, noticeCount, onO
   /** 点击打开通知中心 */
   onOpenNotifications: () => void
 }) {
-  return h('div', { className: styles.root, role: 'tablist' },
+  return h('nav', { className: styles.root, 'aria-label': t('companyTitle') },
     ORDER.map(({ id, labelKey, hintKey, Icon }) => h('button', {
       key: id,
-      role: 'tab',
-      'aria-selected': view === id,
+      type: 'button',
+      'aria-current': view === id ? 'page' : undefined,
       title: t(hintKey),
       className: view === id ? styles.tabActive : styles.tab,
       onClick: () => setView(id),
@@ -46,6 +44,14 @@ export function SectionTabs({ view, setView, installedCount, t, noticeCount, onO
       id === 'installed' && installedCount > 0
         ? h('span', { className: view === id ? styles.tabCountActive : styles.tabCount }, installedCount)
         : null)),
+    h('details', { className: styles.maintenance, 'data-active': view === 'settings' || view === 'custom' },
+      h('summary', null, t('maintenance')),
+      h('div', { className: styles.maintenanceMenu },
+        h('p', null, t('maintenanceHint')),
+        h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('settings') } }, t('viewSettings')),
+        h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('custom') } }, t('viewCustom')),
+      ),
+    ),
     // 通知入口：设置在最后一个 tab 后边，靠右对齐 —— 铃铛 + 红底白字计数（内联跟在铃铛后，不悬浮）
     h('button', {
       type: 'button',

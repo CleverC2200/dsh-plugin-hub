@@ -75,6 +75,14 @@ export function installedNameOf(
   for (const [name, spec] of Object.entries(installed)) {
     if (repoFromInstallTarget(spec).toLowerCase() === needle) return name
   }
+  // Company desktop releases use local archives, so their spec has no repository URL.
+  // Match only an explicit catalog identity and a real local dependency; never
+  // reinterpret this identity as an npm registry target or override a Git source.
+  const desktopPackage = plugin.source?.installedPackage
+  if (desktopPackage) {
+    const spec = installed[desktopPackage]
+    if (spec && /^(?:file:|link:)/.test(spec)) return desktopPackage
+  }
   // npm 通道安装：profile 依赖 key 直接是 npm 包名。包名来源两处——目录数据（npmPackage），
   // 或服务端 npm 优先反查持久化的映射（versions[repo].npmPackage，覆盖组织 scope 与 GitHub
   // 用户名不一致、目录未下发包名的场景）；命中任一并依赖 key 真实存在即视为已安装。

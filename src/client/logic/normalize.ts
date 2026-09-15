@@ -26,6 +26,7 @@ export function normalize(raw: Record<string, unknown>): HubPlugin {
           ? {
             repo: typeof (raw.r as { repo?: unknown }).repo === 'string' ? (raw.r as { repo: string }).repo : undefined,
             npmPackage: typeof (raw.r as { npmPackage?: unknown }).npmPackage === 'string' ? (raw.r as { npmPackage: string }).npmPackage : undefined,
+            installedPackage: typeof (raw.r as { installedPackage?: unknown }).installedPackage === 'string' ? (raw.r as { installedPackage: string }).installedPackage : undefined,
           }
           : undefined,
       // 安装信息：wi 仅在 false 时下发（缺省视为 true 可一键安装）；

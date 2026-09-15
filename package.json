@@ -1,6 +1,6 @@
 {
   "name": "dsh-plugin",
-  "version": "1.4.3-company.4",
+  "version": "1.4.3-company.5",
   "description": "Company plugin catalog based on DSH Plugin Hub",
   "type": "module",
   "main": "lib/index.js",

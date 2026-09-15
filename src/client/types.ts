@@ -57,7 +57,8 @@ export interface HubPlugin {
   topics?: string[]
   features?: string[]
   description?: string
-  source?: { repo?: string; npmPackage?: string }
+  /** installedPackage identifies company desktop archives; it is not an npm install target. */
+  source?: { repo?: string; npmPackage?: string; installedPackage?: string }
   /** 安装信息：能否网页一键安装（false = 仅支持命令行/专属 profile，缺省视为 true）；
    *  command/githubCommand = 目录下发的权威安装命令（npm/git 通道各一条），
    *  仅供展示/复制 —— CLI-only 插件（如 dsh-tui）需专属 profile（--profile dsh-tui），

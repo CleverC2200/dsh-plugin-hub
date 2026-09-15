@@ -20,7 +20,7 @@ import { activeTask, cancelTask, dumpLoaderEntries, getTask, githubRepoOf, githu
 import { recordInstalledVersion, recordResolvedNpmPackage, readInstalledVersions, removeInstalledVersion } from '../services/profile/installed-versions.ts'
 import { resolveNpmPackage } from '../services/install/npm-resolve.ts'
 import { preflightTarget } from '../services/install/preflight.ts'
-import { isDshPlugin, isEntryLoaded } from '../services/loader.ts'
+import { isDshPlugin, isEntryLoaded, configuredBundles, pluginRuntimeStatus } from '../services/loader.ts'
 import { loadSettings, saveSettings, resetSettings, type HubSettings } from '../services/settings.ts'
 import { appendLog, clearLog, readLog, logFilePath, defaultLogFilePath, customLogFile } from '../services/log.ts'
 
@@ -279,6 +279,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
     event: 'system.start',
     message: `Plugin Hub 已启动（profile=${profile}）`,
   })
+  const startupBundles = configuredBundles(profile)
   const disposers = [
     webServer.register({kind:'exact',path:'/dsh-plugin-hub/desktop-updates',handler:async(request,response)=>{
       if(request.method==='GET') {
@@ -1037,14 +1038,16 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
         // 客户端合并这些判断「是否有更新」「运行状态」并展示安装路径/时间等运行时信息。
         const installed = readInstalled(profile)
         const paths: Record<string, string> = {}
+        const runtimeStates: Record<string, string> = {}
         const loaded: string[] = []
         const dshCapable: string[] = []
         for (const name of Object.keys(installed)) {
+          runtimeStates[name] = pluginRuntimeStatus(profile, name, loader, startupBundles)
           paths[name] = join(profileDirectory(profile), 'node_modules', name)
           if (isEntryLoaded(loader, name)) loaded.push(name)
           if (isDshPlugin(profile, name)) dshCapable.push(name)
         }
-        sendJson(response, 200, { profile, installed, versions: readInstalledVersions(profile), paths, loaded, dshCapable })
+        sendJson(response, 200, { profile, installed, versions: readInstalledVersions(profile), paths, loaded, dshCapable, runtimeStates })
       },
     }),
   ]

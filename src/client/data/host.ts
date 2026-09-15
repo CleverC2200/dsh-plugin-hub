@@ -8,9 +8,11 @@
  * routes degrades to null / empty tables instead of throwing.
  */
 import type { EnvInfo } from '../types.ts'
+import type { RuntimeStatus } from '../logic/installed.ts'
 import type { InstalledVersionSignal } from '../logic/installed.ts'
 
 export interface HostInstalled {
+  runtimeStates: Record<string, RuntimeStatus> | null
   installed: Record<string, string>
   versions: Record<string, InstalledVersionSignal>
   /** 每个依赖在系统上的安装目录（profile/node_modules/<包名>），宿主未提供为 null */
@@ -27,6 +29,7 @@ export async function fetchInstalled(): Promise<HostInstalled | null> {
     const res = await fetch('/dsh-plugin-hub/installed', { cache: 'no-store' })
     if (!res.ok) return null
     const data = await res.json() as {
+      runtimeStates?: Record<string, RuntimeStatus>
       installed?: Record<string, string>
       versions?: Record<string, InstalledVersionSignal>
       paths?: Record<string, string>
@@ -34,6 +37,7 @@ export async function fetchInstalled(): Promise<HostInstalled | null> {
       dshCapable?: string[]
     }
     return {
+      runtimeStates: data.runtimeStates ?? null,
       installed: data.installed ?? {},
       versions: data.versions ?? {},
       paths: data.paths ?? null,

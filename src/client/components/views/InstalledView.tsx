@@ -1,3 +1,4 @@
+import { runtimeStatusLabel } from '../../logic/installed.ts'
 /**
  * DSH Plugin Hub — the community plugin marketplace for DeepSeek Harness.
  * Website: https://dsh-plugin.org
@@ -92,15 +93,12 @@ function InstalledRow({ item, t, langKey, canReveal, revealLabel, onOpenDetail, 
       // 灰 = 非 dsh 插件（如官方示例项目，宿主不加载，无需重启）
       h('span', {
         className: item.loaded ? styles.statusDot
-          : item.dshCapable ? `${styles.statusDot} ${styles.statusPending}`
+          : item.runtimeStatus === 'pending' ? `${styles.statusDot} ${styles.statusPending}`
             : `${styles.statusDot} ${styles.statusInactive}`,
-        title: item.loaded ? t('statusRunning')
-          : item.dshCapable ? t('statusPending')
-            : t('exampleHint'),
-        'aria-label': item.loaded ? t('statusRunning')
-          : item.dshCapable ? t('statusPending')
-            : t('exampleHint'),
+        title: t(runtimeStatusLabel(item.runtimeStatus ?? 'unknown')),
+        'aria-label': t(runtimeStatusLabel(item.runtimeStatus ?? 'unknown')),
       }),
+      item.runtimeStatus !== 'running' ? h('span', { className: styles.versionBadge }, t(runtimeStatusLabel(item.runtimeStatus ?? 'unknown'))) : null,
       // 主信息：名称 + 已装版本 + 有更新徽标（flex 撑满，超长省略）
       h('div', { className: styles.rowMain },
         h('span', { className: styles.rowTitle }, name),
@@ -122,7 +120,7 @@ function InstalledRow({ item, t, langKey, canReveal, revealLabel, onOpenDetail, 
       // 行操作：重启（dsh 插件待重启时）/ 详情 / 更新（有更新时）/ 卸载 —— 按钮点击不触发行打开详情
       h('div', { className: styles.rowActions },
         // 装完未挂载的 dsh 插件：给「重启」入口，点了宿主重启后插件即生效；非 dsh 插件不提示（重启无用）
-        !item.loaded && item.dshCapable
+        item.runtimeStatus === 'pending'
           ? h('button', {
             className: styles.rowRestart,
             type: 'button',

@@ -82,6 +82,7 @@ export function useCatalog(lang: LocaleId) {
   /** 已加载进运行中 loader 的包名（官方 ctx.loader 对账）：装完未重启的新插件不在其中 */
   const [loadedNames, setLoadedNames] = useState<string[] | null>(null)
   /** 真正的 dsh 插件包名（包内声明 dsh 配置 / 在 profile bundles 清单）：非 dsh 插件不提示「待重启」 */
+  const [runtimeStates, setRuntimeStates] = useState<Record<string, import('../logic/installed.ts').RuntimeStatus> | null>(null)
   const [dshCapableNames, setDshCapableNames] = useState<string[] | null>(null)
   /** Hub 自我更新信息：来自接口中心 Pages（api.dsh-plugin.org），与目录数据解耦 */
   const [hubUpdateInfo, setHubUpdateInfo] = useState<HubUpdateInfo | null>(null)
@@ -154,6 +155,7 @@ export function useCatalog(lang: LocaleId) {
     setInstallPaths(data.paths)
     setLoadedNames(data.loaded)
     setDshCapableNames(data.dshCapable)
+    setRuntimeStates(data.runtimeStates)
   }
 
   // 首次进入拉取已安装表（依赖宿主 webServer 服务）
@@ -191,8 +193,8 @@ export function useCatalog(lang: LocaleId) {
 
   /** 已安装项统一列表（目录元数据 + 运行时信息合并）：驱动「已安装」tab。 */
   const installedItems = useMemo<InstalledItem[]>(
-    () => installedItemsOf(plugins, installed, versions, installPaths, loadedNames, dshCapableNames),
-    [plugins, installed, versions, installPaths, loadedNames, dshCapableNames],
+    () => installedItemsOf(plugins, installed, versions, installPaths, loadedNames, dshCapableNames, runtimeStates),
+    [plugins, installed, versions, installPaths, loadedNames, dshCapableNames, runtimeStates],
   )
 
   /**

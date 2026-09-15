@@ -1,3 +1,4 @@
+import { runtimeStatusLabel } from '../../logic/installed.ts'
 /**
  * DSH Plugin Hub — the community plugin marketplace for DeepSeek Harness.
  * Website: https://dsh-plugin.org
@@ -89,7 +90,7 @@ export function InstalledDetailModal({ item, t, lang, langPath, onClose, onUpdat
                 'aria-hidden': 'true',
               }),
               h('span', { className: styles.detailStatusText },
-                item.loaded ? t('statusRunning') : t('statusPending')))),
+                t(runtimeStatusLabel(item.runtimeStatus ?? 'unknown'))))),
           item.installedVersion
             ? h('div', { className: styles.detailRow },
               h('span', { className: styles.detailLabel }, t('installedVersionLabel')),

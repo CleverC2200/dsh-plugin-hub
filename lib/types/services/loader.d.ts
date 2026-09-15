@@ -53,3 +53,6 @@ export declare function removeLoadedEntry(loader: LoaderHandle, name: string): P
  * 装上也不会被宿主加载——UI 据此不再提示「待重启」，避免误导用户反复重启一个不会生效的东西。
  */
 export declare function isDshPlugin(profile: string, name: string): boolean;
+export declare function configuredBundles(profile: string): string[] | null;
+/** An installed bundle outside the profile cannot be activated by restarting. */
+export declare function pluginRuntimeStatus(profile: string, name: string, loader: LoaderHandle | undefined, startupBundles: string[] | null): "disabled" | "inactive" | "pending" | "running" | "unknown" | "unloaded";

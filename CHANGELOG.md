@@ -4,6 +4,13 @@ All notable changes to **dsh-plugin** are documented here. The format is
 based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.3-company.1] - 2026-09-14
+
+- Bundle a bilingual company catalog and matching statistics, without upstream caches.
+- Disable upstream updates and promotional requests; retain MIT attribution.
+- Disable GEA catalog installation until distribution is verified; retain custom installation.
+- Link resource suites to Agent Manage and document private repository access.
+
 ## [Unreleased]
 
 ### Added
@@ -40,3 +47,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 [Unreleased]: https://github.com/dshplugin/dsh-plugin-hub/compare/v0.1.1...HEAD
 [0.1.1]: https://github.com/dshplugin/dsh-plugin-hub/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/dshplugin/dsh-plugin-hub/releases/tag/v0.1.0
+
+## 1.4.3-company.2
+
+Company stable/test release contracts, authenticated private downloads, SHA-256 and exact compatibility checks; desktop-owned preparation/cancellation/restart, automatic/manual checks and visible update results. Desktop graphs reject legacy in-place installation and removal.

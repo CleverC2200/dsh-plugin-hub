@@ -1,0 +1,11 @@
+.root { flex: none; padding: 16px 0; border-bottom: 1px solid var(--hub-border-1); color: var(--hub-text-primary); font-size: 13px; line-height: 1.5; }
+.heading, .release { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.root p { margin: 4px 0 0; color: var(--hub-text-secondary); }
+.release { padding: 16px 0; border-top: 1px solid var(--hub-border-1); margin-top: 12px; }
+.release > div { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+.root button { font: inherit; padding: 6px 12px; min-height: 34px; border: 1px solid var(--hub-border-input); border-radius: 6px; color: var(--hub-text-primary); background: transparent; cursor: pointer; }
+.root button:hover:not(:disabled) { background: var(--hub-bg-2); }
+.root button:disabled { opacity: .55; cursor: default; }
+.root :focus-visible { outline: 2px solid var(--hub-brand); outline-offset: 3px; }
+.root [role=alert] { color: var(--hub-danger); }

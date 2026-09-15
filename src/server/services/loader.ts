@@ -47,7 +47,7 @@ export function dumpLoaderEntries(loader: LoaderHandle | undefined): Array<{ id:
 export function isEntryLoaded(loader: LoaderHandle | undefined, name: string): boolean {
   if (!loader) return false
   for (const entry of Array.from(loader.entries())) {
-    if (nameMatches(entry.options?.name, name)) return true
+    if (!entry.options?.disabled && nameMatches(entry.options?.name, name)) return true
   }
   return false
 }
@@ -172,4 +172,30 @@ export function isDshPlugin(profile: string, name: string): boolean {
     }
   } catch { /* 包缺失 / 无 package.json → 不是 dsh 插件 */ }
   return false
+}
+
+
+export function configuredBundles(profile: string): string[] | null {
+  try {
+    const pkg = JSON.parse(readFileSync(join(profileDirectory(profile), 'package.json'), 'utf8'))
+    const bundles = pkg.dsh?.profile?.bundles ?? []
+    return Array.isArray(bundles) && bundles.every((name) => typeof name === 'string') ? bundles : null
+  } catch { return null }
+}
+
+/** An installed bundle outside the profile cannot be activated by restarting. */
+export function pluginRuntimeStatus(profile: string, name: string, loader: LoaderHandle | undefined, startupBundles: string[] | null) {
+  if (!loader) return 'unknown'
+  if (isEntryLoaded(loader, name)) return 'running'
+  if (!isDshPlugin(profile, name)) return 'inactive'
+  const bundles = configuredBundles(profile)
+  if (bundles === null) return 'unknown'
+  if (bundles.includes(name)) {
+    return startupBundles !== null && !startupBundles.includes(name) ? 'pending' : 'unloaded'
+  }
+  try {
+    const pkg = JSON.parse(readFileSync(join(profileDirectory(profile), 'node_modules', name, 'package.json'), 'utf8'))
+    if (pkg.dsh?.bundle) return 'disabled'
+  } catch { return 'unknown' }
+  return 'unloaded'
 }

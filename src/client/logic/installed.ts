@@ -24,7 +24,14 @@ export interface InstalledVersionSignal {
 }
 
 /** 已安装项统一模型：目录元数据 + 宿主运行时信息的合并视图（驱动「已安装」tab）。 */
+export type RuntimeStatus = 'running' | 'pending' | 'disabled' | 'unloaded' | 'inactive' | 'unknown'
+
+export function runtimeStatusLabel(status: RuntimeStatus) {
+  return ({ running: 'statusRunning', pending: 'statusPending', disabled: 'statusDisabled', unloaded: 'statusUnloaded', inactive: 'statusInactive', unknown: 'statusUnknown' } as const)[status]
+}
+
 export interface InstalledItem {
+  runtimeStatus?: RuntimeStatus
   /** npm 包名（profile 依赖 key） */
   name: string
   /** manifest spec（github:owner/repo、git+https://…、或 npm 版本号） */
@@ -192,6 +199,7 @@ export function installedItemsOf(
   paths: Record<string, string> | null,
   loadedNames: string[] | null,
   dshCapableNames: string[] | null,
+  runtimeStates: Record<string, RuntimeStatus> | null = null,
 ): InstalledItem[] {
   const items: InstalledItem[] = []
   // 已被目录条目认领的依赖 key：同一依赖只归属一个目录条目（React key 必须唯一，
@@ -214,6 +222,7 @@ export function installedItemsOf(
       installedAt: rec?.installedAt ?? null,
       catalogVersion: p.version ?? null,
       hasUpdate: hasUpdateOf(p, installed, versions),
+      runtimeStatus: runtimeStates?.[name] ?? (loadedNames?.includes(name) ? 'running' : 'unknown'),
       loaded: loadedNames?.includes(name) ?? false,
       dshCapable: dshCapableNames?.includes(name) ?? false,
     })
@@ -238,6 +247,7 @@ export function installedItemsOf(
       catalogVersion: null,
       // 目录外没有目录信号可比，无法判断是否有更新
       hasUpdate: false,
+      runtimeStatus: runtimeStates?.[name] ?? (loadedNames?.includes(name) ? 'running' : 'unknown'),
       loaded: loadedNames?.includes(name) ?? false,
       dshCapable: dshCapableNames?.includes(name) ?? false,
     })

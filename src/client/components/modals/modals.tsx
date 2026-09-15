@@ -197,7 +197,7 @@ export function InstallModal(props: InstallModalProps) {
             }, t('copyInstallCommand')),
             h('button', {
               className: styles.modalInstall,
-              disabled: busy,
+              disabled: busy || cliOnly,
               onClick: onInstall,
             }, busy
               ? (task && task.status === 'pending'

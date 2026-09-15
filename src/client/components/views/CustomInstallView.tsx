@@ -183,12 +183,6 @@ export function CustomInstallView({ t, onInstallCustom, enableNpm, enableGit, en
     setCmdQuery('')
     setCmdError('')
   }
-  /** 一键插入 DSH Plugin Hub 自身的更新命令：按当前 profile 拼官方命令填进输入框，用户确认后提交 */
-  const insertHubUpdate = () => {
-    setCmdQuery(`dsh plugin --profile ${profile} update dsh-plugin`)
-    setCmdError('')
-  }
-
   return h('div', { className: styles.root },
     // 页面说明：独立一级导航，交代「装完去哪看」
     h('p', { className: styles.desc }, t('customViewDesc')),
@@ -290,15 +284,7 @@ export function CustomInstallView({ t, onInstallCustom, enableNpm, enableGit, en
             'aria-label': t('installHelp'),
             onClick: () => setHelpFor('cmd'),
           }, h(HelpIcon)),
-          // 一键插入 Hub 自身的更新命令：按当前 profile 拼 `dsh plugin --profile <p> update dsh-plugin`
-          // 填入输入框（命令卡片被安全开关禁用时不显示，插入后也提交不了）
-          enableDsh
-            ? h('button', {
-              type: 'button',
-              className: styles.installInsertBtn,
-              onClick: insertHubUpdate,
-            }, t('dshCmdInsertHubUpdate'))
-            : null,
+
         ),
         !enableDsh
           ? channelOffRow

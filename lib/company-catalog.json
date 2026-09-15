@@ -1,0 +1,60 @@
+[
+    {
+        "slug": "dsh-gea-plugin",
+        "ownerSlug": "cleverc2200",
+        "displayName": "GEA 业务工作台",
+        "category": "agent",
+        "description": "GEA 登录与需求预测业务页面；随桌面发行，通过公司桌面更新准备新版本。",
+        "source": {
+            "repo": "CleverC2200/dsh-gea-plugin"
+        },
+        "install": {
+            "webInstallable": false
+        },
+        "locales": {
+            "en": {
+                "displayName": "GEA business workbench",
+                "description": "GEA login and business pages. Distributed with the desktop; prepare new versions through company desktop updates."
+            }
+        }
+    },
+    {
+        "slug": "dsh-agent-manage",
+        "ownerSlug": "cleverc2200",
+        "displayName": "Agent Manage（公司版）",
+        "category": "integration",
+        "description": "公司维护的 Agent 套件管理插件。",
+        "source": {
+            "repo": "CleverC2200/dsh-agent-manage"
+        },
+        "install": {
+            "webInstallable": true
+        },
+        "locales": {
+            "en": {
+                "displayName": "Agent Manage (company edition)",
+                "description": "Company-maintained Agent suite management plugin."
+            }
+        }
+    },
+    {
+        "slug": "dsh-agent-workbench",
+        "ownerSlug": "cleverc2200",
+        "displayName": "Agent 公共工作台",
+        "version": "0.1.1",
+        "category": "interface",
+        "description": "独立工作台插件：业务页面与原生会话并排显示。私有仓库安装需要读取权限。",
+        "source": {
+            "repo": "CleverC2200/dsh-agent-workbench"
+        },
+        "install": {
+            "webInstallable": true
+        },
+        "locales": {
+            "en": {
+                "displayName": "Shared Agent workbench",
+                "description": "Independent workbench with business pages beside native sessions. Private repository read access is required."
+            }
+        }
+    }
+]

@@ -140,3 +140,14 @@
   background: var(--hub-danger);
   box-shadow: 0 1px 3px rgba(209, 36, 47, 0.35);
 }
+
+.root { gap: 20px; align-items: center; flex-wrap: wrap; }
+.maintenance { position: relative; margin-left: auto; font-size: 12px; color: var(--hub-text-secondary); }
+.maintenance summary { cursor: pointer; padding: 10px 0; }
+.maintenanceMenu { position: absolute; top: 100%; right: 0; z-index: 5; width: 220px; box-sizing: border-box; padding: 16px; border: 1px solid var(--hub-border-2); border-radius: 8px; background: var(--hub-bg-1); }
+.maintenanceMenu p { margin: 0 0 12px; line-height: 1.6; }
+.maintenanceMenu button { display: block; width: 100%; min-height: 36px; padding: 8px; border: 0; background: transparent; color: var(--hub-text-primary); font: inherit; text-align: left; cursor: pointer; border-radius: 4px; }
+.maintenanceMenu button:hover { background: var(--hub-bg-2); }
+.noticeBtn { margin-left: 0; }
+.maintenance[data-active='true'] summary { color: var(--hub-text-primary); font-weight: 600; }
+@media (max-width: 520px) { .root { gap: 8px; } .tab, .tabActive { font-size: 13px; gap: 4px; } }

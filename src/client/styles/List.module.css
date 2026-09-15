@@ -365,3 +365,15 @@ body[data-ds-dark-theme] .uninstallBtn:hover {
 .footLink:hover {
   text-decoration: underline;
 }
+
+.body { flex: none; }
+.list { flex: none; overflow: visible; gap: 0; padding: 0; }
+.companyRow { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--hub-border-1); }
+.companyMain { min-width: 0; flex: 1; }
+.companyName { margin: 0; font-size: 15px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.companyDesc { margin: 8px 0 0; font-size: 13px; line-height: 1.7; color: var(--hub-text-secondary); overflow-wrap: anywhere; }
+.companyStatus { display: inline-block; margin-top: 8px; color: var(--hub-text-secondary); font-size: 12px; line-height: 1.5; }
+.companyActions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+.companyActions .companyStatus { margin: 0; }
+.companyActions button { min-height: 34px; padding: 6px 14px; font-size: 13px; }
+@media (max-width: 520px) { .companyRow { align-items: flex-start; flex-direction: column; gap: 12px; } .companyActions { align-self: flex-end; } }

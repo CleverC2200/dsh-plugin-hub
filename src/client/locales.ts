@@ -6,13 +6,22 @@
  * zh/en dictionaries for the DSH Plugin Hub settings section.
  */
 export const zh = {
-  nav: '插件市场',
-  title: 'DSH Plugin Hub',
+  companyTitle: '公司插件',
+  companyIntro: '为日常工作添加所需功能，由公司统一维护。',
+  companySearch: '搜索公司插件',
+  companyBundled: '随桌面提供',
+  companyBundledHint: '通过桌面更新获取新版本',
+  companyManage: '管理',
+  maintenance: '技术维护',
+  maintenanceHint: '供技术支持人员排查问题和维护安装。',
+
+  nav: '公司插件',
+  title: 'GEA Plugin Hub',
   // 收录/精选数量由组件从官网 /api/stats.json 实时拉取填充（{total}/{verified}），不写死
-  tagline: 'DSH Plugin 插件市场：面向 DeepSeek Harness 插件收录平台，人工审验、来源可溯，免费安装',
+  tagline: '公司维护的插件与仓库目录',
   adBadge: '推荐',
   // 紫色广告横幅：突出数量（显眼）+ 更新节奏，与 tagline 职责分开、不重复
-  ad: 'DSH Plugin 插件市场：收录 {total} 款插件，{verified} 款人工精选验证，每日更新',
+  ad: '公司插件目录：收录 {total} 款插件',
   search: '搜索插件名称、描述、标签…',
   all: '全部',
   sortStars: 'Star',
@@ -20,7 +29,7 @@ export const zh = {
   sortUpdated: '最近更新',
   sortNewest: '最新收录',
   sortAria: '插件排序方式',
-  openHint: '打开 dsh-plugin.org',
+  openHint: '打开公司仓库',
   toggleLangHint: '切换界面语言',
   fork: 'Fork',
   loading: '正在加载插件数据…',
@@ -36,7 +45,7 @@ export const zh = {
   toastCopied: '安装命令已复制，去 dsh 终端粘贴即可安装',
   installed: '已安装',
   // 一级导航：插件市场 / 已安装 / 自定义安装 / 设置
-  viewMarket: '插件市场',
+  viewMarket: '公司插件',
   viewInstalled: '已安装',
   viewCustom: '自定义安装',
   viewSettings: '设置',
@@ -90,6 +99,10 @@ export const zh = {
   statusLabel: '安装状态',
   statusRunning: '运行中',
   statusPending: '待重启',
+  statusDisabled: '未启用',
+  statusUnloaded: '未加载，请检查日志',
+  statusInactive: '非宿主插件',
+  statusUnknown: '状态未知',
   exampleLabel: 'DeepSeek Harness 内置示例项目',
   exampleHint: 'DeepSeek Harness 内置示例项目：不是插件市场的 dsh 插件，宿主不会加载它，无需重启',
   restart: '重启',
@@ -357,20 +370,29 @@ export const zh = {
   // 头部「关注我们」弹窗：平台介绍 + 用户反馈群二维码（内容由 Worker /about Markdown 推送，非写死）
   followUs: '关注我们',
   aboutTitle: '关注我们',
-  aboutDesc: '了解 DSH Plugin Hub 是做什么的，加入用户反馈群随时交流。',
+  aboutDesc: '查看公司插件与 Agent 套件仓库。',
   aboutEmpty: '内容暂未发布，敬请期待。',
   aboutUpdated: '更新于',
   empty: '该分类暂无插件',
-  dataFrom: '数据源 api.dsh-plugin.org · 每日人工更新',
+  dataFrom: '数据源：公司维护的本地目录',
 }
 
 export const en = {
+  companyTitle: 'Company plugins',
+  companyIntro: 'Tools for your daily work, maintained by your company.',
+  companySearch: 'Search company plugins',
+  companyBundled: 'Included with desktop',
+  companyBundledHint: 'New versions arrive through desktop updates',
+  companyManage: 'Manage',
+  maintenance: 'Technical support',
+  maintenanceHint: 'Installation and troubleshooting tools for technical support.',
+
   nav: 'Plugin Hub',
-  title: 'DSH Plugin Hub',
+  title: 'GEA Plugin Hub',
   // Plugin counts are filled from the live /api/stats.json ({total}/{verified}), never hardcoded
-  tagline: 'DSH Plugin Hub: a human-verified, free marketplace for DeepSeek Harness plugins',
+  tagline: 'Company-maintained plugins and repositories',
   adBadge: 'Featured',
-  ad: 'DSH Plugin Hub: {total} plugins indexed, {verified} human-verified, updated daily',
+  ad: 'Company catalog: {total} plugins',
   search: 'Search plugins by name, description, tags…',
   all: 'All',
   sortStars: 'Stars',
@@ -450,6 +472,10 @@ export const en = {
   statusLabel: 'Status',
   statusRunning: 'Running',
   statusPending: 'Restart pending',
+  statusDisabled: 'Not enabled',
+  statusUnloaded: 'Not loaded — check logs',
+  statusInactive: 'Not a host plugin',
+  statusUnknown: 'Status unknown',
   exampleLabel: 'DeepSeek Harness built-in example',
   exampleHint: 'DeepSeek Harness built-in example — not a marketplace dsh plugin, the host does not load it, no restart needed',
   restart: 'Restart',
@@ -722,5 +748,5 @@ export const en = {
   aboutEmpty: 'Content not published yet — stay tuned.',
   aboutUpdated: 'Updated',
   empty: 'No plugins in this category yet',
-  dataFrom: 'Data from api.dsh-plugin.org · curated daily',
+  dataFrom: 'Source: company-maintained local catalog',
 }

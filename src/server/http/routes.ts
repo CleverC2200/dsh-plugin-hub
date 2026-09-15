@@ -1,3 +1,4 @@
+import { companyCatalog } from '../services/company-catalog.ts'
 /**
  * DSH Plugin Hub — the community plugin marketplace for DeepSeek Harness.
  * Website: https://dsh-plugin.org
@@ -8,17 +9,17 @@
  * install handler validates the target, then spawns the official dsh CLI
  * (see services/install/install.ts) and reports the captured result back.
  */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { homedir, release } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
-import { fetchViaCurl, gitLsRemote, probeUrl, systemProxy } from '../services/probe.ts'
+import { gitLsRemote, probeUrl, systemProxy } from '../services/probe.ts'
 import { activeTask, cancelTask, dumpLoaderEntries, getTask, githubRepoOf, githubTarget, globalNpmPackagesOf, hasQueuedTarget, installTargetOf, listPendingRestarts, readProfileArg, startPluginMutation, validPackageName, type LoaderHandle } from '../services/install/install.ts'
 import { recordInstalledVersion, recordResolvedNpmPackage, readInstalledVersions, removeInstalledVersion } from '../services/profile/installed-versions.ts'
 import { resolveNpmPackage } from '../services/install/npm-resolve.ts'
 import { preflightTarget } from '../services/install/preflight.ts'
-import { isDshPlugin, isEntryLoaded } from '../services/loader.ts'
+import { isDshPlugin, isEntryLoaded, configuredBundles, pluginRuntimeStatus } from '../services/loader.ts'
 import { loadSettings, saveSettings, resetSettings, type HubSettings } from '../services/settings.ts'
 import { appendLog, clearLog, readLog, logFilePath, defaultLogFilePath, customLogFile } from '../services/log.ts'
 
@@ -93,44 +94,7 @@ const PROFILE_RE = /^[A-Za-z0-9_-]+$/
 const BODY_LIMIT_BYTES = 4 * 1024
 const COMMAND_TIMEOUT_MS = 5 * 60 * 1000
 
-/** 目录/统计数据代理的本地缓存时长：1 小时内重复打开插件市场直接读盘，
- *  不重复走 curl 拉远程 —— 重启宿主后首次打开同样秒开（缓存跨重启存活）。 */
-const CATALOG_CACHE_TTL_MS = 60 * 60 * 1000
-
-/** 磁盘缓存内容：原始响应字符串 + 写入时间戳（TTL 判定用）。 */
-interface CatalogCacheEntry {
-  at: number
-  body: string
-}
-
-function catalogCacheFile(profile: string, key: string): string {
-  return join(profileDirectory(profile), 'cache', `catalog-${key}.json`)
-}
-
-/** 读缓存：文件存在、JSON 合法、未过期 → 返回原始响应字符串；否则 null（视为 miss）。 */
-function readCatalogCache(file: string): string | null {
-  try {
-    const entry = JSON.parse(readFileSync(file, 'utf8')) as CatalogCacheEntry
-    if (entry && typeof entry.at === 'number' && typeof entry.body === 'string'
-      && Date.now() - entry.at < CATALOG_CACHE_TTL_MS) {
-      return entry.body
-    }
-  } catch {
-    // 文件缺失 / 解析失败 / 字段不完整 → miss，重新拉取覆盖写盘
-  }
-  return null
-}
-
-/** 写缓存：目录不存在则创建；写失败静默忽略（缓存只是加速，不影响功能）。 */
-function writeCatalogCache(file: string, body: string): void {
-  try {
-    mkdirSync(dirname(file), { recursive: true })
-    writeFileSync(file, JSON.stringify({ at: Date.now(), body } satisfies CatalogCacheEntry))
-  } catch {
-    // 磁盘只读/无权限等极端情况：忽略，继续走直连
-  }
-}
-
+/** Resolve the writable profile used by plugin operations. */
 function profileDirectory(profile: string): string {
   return join(process.env.DSH_HOME ?? join(homedir(), '.dsh'), 'profiles', profile)
 }
@@ -314,6 +278,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
     event: 'system.start',
     message: `Plugin Hub 已启动（profile=${profile}）`,
   })
+  const startupBundles = configuredBundles(profile)
   const disposers = [
     webServer.register({
       kind: 'exact',
@@ -535,8 +500,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
           { key: 'npm', url: `${registry}/dsh-plugin`, display: settings.npmRegistry !== '' ? registry : '', cmd: `npm view dsh-plugin version --registry ${registry}` },
           // GitHub 行用真实 git 克隆握手（git ls-remote）打 dshplugin/hello-dsh 小仓库：
           // 「网页能打开」和「git 能克隆」是两码事，握手成功才算通道通；小仓库秒级完成，不打 17MB 的 dsh-plugin-hub。
-          { key: 'github', url: 'https://github.com/dshplugin/hello-dsh', display: 'github.com', cmd: 'git ls-remote https://github.com/dshplugin/hello-dsh', git: true },
-          { key: 'catalog', url: 'https://api.dsh-plugin.org/stats.json', display: '', cmd: 'curl -s https://api.dsh-plugin.org/stats.json' },
+          { key: 'github', url: 'https://github.com/CleverC2200/dsh-gea-plugin', display: 'github.com', cmd: 'git ls-remote https://github.com/CleverC2200/dsh-gea-plugin', git: true },
         ]
         // 配置了 HTTP 代理：追加一行代理诊断 —— 用该代理打 github.com（安装通道真实访问的地址），
         // 验证「代理能不能把请求带出去」。与安装同口径：curl 子进程注入该代理 env。
@@ -594,7 +558,7 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
         // 供设置页输入代理时实时反馈「这个地址通不通」。不通过也允许保存 ——
         // 用户可能是先填地址后开代理，因此这里只报告探测结果、不拦截保存。
         let proxy = ''
-        let target = 'https://github.com/dshplugin/hello-dsh'
+        let target = 'https://github.com/CleverC2200/dsh-gea-plugin'
         try {
           const body = await readJsonBody(request)
           if (body !== null && typeof body === 'object') {
@@ -619,42 +583,8 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
       path: '/dsh-plugin-hub/catalog',
       handler: async (request, response) => {
         if (!requireMethod(request, response, 'GET')) return
-        // 目录/统计数据服务端代理：浏览器不再直连 dsh-plugin.org，改经此路由
-        // 转发（curl 子进程注入代理 env），与 npm / git 安装通道走同一代理口径，
-        // 「npm / git / 目录数据请求统一走该代理」的设置文案因此真实生效。
         const url = new URL(request.url ?? '/', 'http://localhost')
-        const settings = loadSettings(profile)
-        // 代理优先级与安装/诊断一致：设置里的代理 → 系统代理 → 环境变量 → 直连
-        const proxy = settings.proxy !== ''
-          ? settings.proxy
-          : (systemProxy() ?? process.env.HTTPS_PROXY ?? process.env.https_proxy ?? '')
-        const isStats = url.searchParams.get('stats') === '1'
-        const lang = url.searchParams.get('lang') === 'en' ? 'en' : 'zh'
-        const target = isStats
-          ? 'https://api.dsh-plugin.org/stats.json'
-          : `https://api.dsh-plugin.org/plugins.${lang}.json`
-        // 1 小时本地缓存：命中直接返回（跨重启生效，插件市场秒开），未命中才走 curl 拉远程
-        const cacheFile = catalogCacheFile(profile, isStats ? 'stats' : `plugins-${lang}`)
-        const cached = readCatalogCache(cacheFile)
-        if (cached !== null) {
-          try {
-            sendJson(response, 200, JSON.parse(cached))
-            return
-          } catch {
-            // 缓存正文损坏：忽略，走重新拉取并覆盖写盘
-          }
-        }
-        const r = await fetchViaCurl(target, proxy, 20000)
-        if (!r.ok || r.body === '') {
-          sendJson(response, 502, { error: 'catalog fetch failed' })
-          return
-        }
-        try {
-          sendJson(response, 200, JSON.parse(r.body))
-          writeCatalogCache(cacheFile, r.body)
-        } catch {
-          sendJson(response, 502, { error: 'catalog fetch returned invalid JSON' })
-        }
+        sendJson(response, 200, companyCatalog(url.searchParams.get('stats') === '1'))
       },
     }),
     webServer.register({
@@ -1087,14 +1017,16 @@ export function mountPluginHubRoutes(webServer: WebServerService, profile: strin
         // 客户端合并这些判断「是否有更新」「运行状态」并展示安装路径/时间等运行时信息。
         const installed = readInstalled(profile)
         const paths: Record<string, string> = {}
+        const runtimeStates: Record<string, string> = {}
         const loaded: string[] = []
         const dshCapable: string[] = []
         for (const name of Object.keys(installed)) {
+          runtimeStates[name] = pluginRuntimeStatus(profile, name, loader, startupBundles)
           paths[name] = join(profileDirectory(profile), 'node_modules', name)
           if (isEntryLoaded(loader, name)) loaded.push(name)
           if (isDshPlugin(profile, name)) dshCapable.push(name)
         }
-        sendJson(response, 200, { profile, installed, versions: readInstalledVersions(profile), paths, loaded, dshCapable })
+        sendJson(response, 200, { profile, installed, versions: readInstalledVersions(profile), paths, loaded, dshCapable, runtimeStates })
       },
     }),
   ]

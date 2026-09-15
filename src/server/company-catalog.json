@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "dsh-gea-plugin",
+    "ownerSlug": "cleverc2200",
+    "displayName": "GEA 业务工作台",
+    "category": "agent",
+    "description": "登录 GEA，处理需求预测与销售计划审批。",
+    "source": {
+      "repo": "CleverC2200/dsh-gea-plugin"
+    },
+    "install": {
+      "webInstallable": false
+    }
+  },
+  {
+    "slug": "dsh-agent-manage",
+    "ownerSlug": "cleverc2200",
+    "displayName": "Agent 资源管理",
+    "category": "integration",
+    "description": "管理工作中使用的 Agent 套件、技能与指令。",
+    "source": {
+      "repo": "CleverC2200/dsh-agent-manage"
+    },
+    "install": {
+      "webInstallable": true
+    }
+  },
+  {
+    "slug": "dsh-agent-workbench",
+    "ownerSlug": "cleverc2200",
+    "displayName": "Agent 公共工作台",
+    "version": "0.1.1",
+    "category": "interface",
+    "description": "并排查看业务页面与对话，在独立工作台中处理任务。",
+    "source": {
+      "repo": "CleverC2200/dsh-agent-workbench"
+    },
+    "install": {
+      "webInstallable": true
+    }
+  }
+]

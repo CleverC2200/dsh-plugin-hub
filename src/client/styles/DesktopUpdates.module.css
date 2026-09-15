@@ -1,6 +1,8 @@
 .root { flex: none; padding: 16px 0; border-bottom: 1px solid var(--hub-border-1); color: var(--hub-text-primary); font-size: 13px; line-height: 1.5; }
 .heading, .release { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.heading > div:first-child { flex: 1; min-width: 180px; }
+.heading > .actions { margin-left: auto; justify-content: flex-end; }
 .root p { margin: 4px 0 0; color: var(--hub-text-secondary); }
 .release { padding: 16px 0; border-top: 1px solid var(--hub-border-1); margin-top: 12px; }
 .release > div { min-width: 0; flex: 1; overflow-wrap: anywhere; }
@@ -9,3 +11,6 @@
 .root button:disabled { opacity: .55; cursor: default; }
 .root :focus-visible { outline: 2px solid var(--hub-brand); outline-offset: 3px; }
 .root [role=alert] { color: var(--hub-danger); }
+.root .primary { background: var(--hub-btn-fill); color: var(--hub-text-on-fill); border-color: transparent; }
+.root .primary:hover:not(:disabled) { background: var(--hub-btn-hover); }
+.hint, .empty { padding: 16px 0; font-size: 13px; line-height: 1.7; color: var(--hub-text-secondary); }

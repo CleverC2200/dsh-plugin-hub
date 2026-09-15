@@ -24,4 +24,12 @@ An administrator provisions a caller-owned GitHub token with read access to priv
 
 ## Evidence
 
+## Company Hub 1.4.3-company.6
+
+The default settings page is Software updates. Component status, catalog and installation settings are under Technical maintenance. Check for updates and download actions align right; a successful check reveals available updates directly, without a View updates toggle. Existing pending updates remain visible when reopening the page.
+
+Download all is enabled only when the desktop owner advertises `capabilities.batchPrepare`. Older owners retain individual downloads; installing this Hub alone does not add batch preparation to Electron. Batch owner changes are tracked separately from this plugin release.
+
+Validation: client/server/test type checks, 84 passing tests (2 skipped), production build, and browser preview of initial check-only and checked-with-updates states.
+
 GEA 0.0.2 → 0.0.3, workbench 0.1.1 unchanged, company Hub 1.4.3-company.2, official DSH 0.1.5-rc.2 / Electron 44.0.0: real market check, private download, immutable preparation, explicit Electron restart and rendered/current version agreement passed. Encrypted login bytes, an existing independent Agent session and workspace file survived. Tests live in GEA `desktop/market-update.test.mjs`; channel/credential/hash contract tests live in this repository's `tests/release-channel.test.ts`.

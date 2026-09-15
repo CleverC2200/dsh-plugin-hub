@@ -11,14 +11,9 @@
  */
 import { createElement as h } from 'react'
 import styles from '../../styles/SectionTabs.module.css'
-import { BellIcon, InstalledIcon, MarketIcon } from '../ui/icons.tsx'
+import { BellIcon } from '../ui/icons.tsx'
 
-export type SectionView = 'market' | 'installed' | 'custom' | 'settings'
-
-const ORDER: Array<{ id: SectionView; labelKey: string; hintKey: string; Icon: () => ReturnType<typeof h> }> = [
-  { id: 'market', labelKey: 'viewMarket', hintKey: 'viewMarketHint', Icon: MarketIcon },
-  { id: 'installed', labelKey: 'viewInstalled', hintKey: 'viewInstalledHint', Icon: InstalledIcon },
-]
+export type SectionView = 'updates' | 'market' | 'installed' | 'custom' | 'settings'
 
 export function SectionTabs({ view, setView, installedCount, t, noticeCount, onOpenNotifications }: {
   view: SectionView
@@ -31,23 +26,17 @@ export function SectionTabs({ view, setView, installedCount, t, noticeCount, onO
   onOpenNotifications: () => void
 }) {
   return h('nav', { className: styles.root, 'aria-label': t('companyTitle') },
-    ORDER.map(({ id, labelKey, hintKey, Icon }) => h('button', {
-      key: id,
+    view !== 'updates' && h('button', {
       type: 'button',
-      'aria-current': view === id ? 'page' : undefined,
-      title: t(hintKey),
-      className: view === id ? styles.tabActive : styles.tab,
-      onClick: () => setView(id),
-    },
-      h('span', { className: styles.tabIcon }, h(Icon)),
-      t(labelKey),
-      id === 'installed' && installedCount > 0
-        ? h('span', { className: view === id ? styles.tabCountActive : styles.tabCount }, installedCount)
-        : null)),
-    h('details', { className: styles.maintenance, 'data-active': view === 'settings' || view === 'custom' },
+      className: styles.tab,
+      onClick: () => setView('updates'),
+    }, t('backToUpdates')),
+    h('details', { className: styles.maintenance, 'data-active': view !== 'updates' },
       h('summary', null, t('maintenance')),
       h('div', { className: styles.maintenanceMenu },
         h('p', null, t('maintenanceHint')),
+        h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('installed') } }, t('componentStatus')),
+        h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('market') } }, t('viewMarket')),
         h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('settings') } }, t('viewSettings')),
         h('button', { type: 'button', onClick: (e: React.MouseEvent<HTMLButtonElement>) => { e.currentTarget.closest('details')?.removeAttribute('open'); setView('custom') } }, t('viewCustom')),
       ),
